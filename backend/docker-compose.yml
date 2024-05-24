@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  api:
+    build: .
+    container_name: api
+    ports:
+      - 3001:3001
+    volumes:
+      - .:/app
+    tty: true
+    stdin_open: true
+    command: sh
+    env_file:
+      - ./envs/api.env
+    depends_on:
+      - database
+
+  database:
+    image: mysql:8.0.32
+    container_name: database
+    env_file:
+      - ./envs/database.env
+    ports:
+      - 3306:3306
+    
