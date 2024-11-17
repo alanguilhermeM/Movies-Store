@@ -1,5 +1,6 @@
 import { TMovie } from "@/types/movieTypes";
 import { TUser } from "@/types/userTypes";
+import { Dispatch, SetStateAction } from "react";
 
 export interface UserContextType {
   user: TUser | undefined;
@@ -15,9 +16,22 @@ export interface MovieContextType {
   handleSearchMyMovies: (movies: TMovie[]) => void;
 }
 
+export interface MovieCardContextType {
+  hoveredMovie: TMovie | null;
+  setHoveredMovie: Dispatch<SetStateAction<TMovie | null>>
+  loginState: (string | boolean)[];
+  setLoginState: Dispatch<SetStateAction<(string | boolean)[]>>;
+  currentPage: number;
+  setCurrentPage: Dispatch<SetStateAction<(number)>>;
+}
+
 export interface SideBarProps {
   loggedIn: boolean;
   sideBar: boolean;
   setSideBar: React.Dispatch<React.SetStateAction<boolean>>;
   keepLogged?: TUser;
+}
+
+export interface MovieCardProps {
+  movie: TMovie;
 }

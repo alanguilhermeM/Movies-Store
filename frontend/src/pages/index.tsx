@@ -10,12 +10,12 @@ const Home: React.FC = () => {
   useEffect(() => {
   }, [sideBarOn])
   return (
-    <>
+    <main>
       <Header setSideBarOn={setSideBarOn} />
-      <main className="bg-gray-500 h-[130rem] w-full">
+      <section className="bg-gray-500 h-[130rem] w-full">
         <CardMovie sideBarOn={sideBarOn}/>
-      </main>
-    </>
+      </section>
+    </main>
   );
 }
 
