@@ -1,3 +1,4 @@
+"use client"
 import { createContext, useCallback, useContext, useState } from "react";
 import { TMovie } from '../types/movieTypes'
 import { MovieContextType } from "@/interfaces/interfaces";
@@ -24,4 +25,4 @@ export const MovieProvider = ({ children }: { children: React.ReactNode }) => {
     return <MovieContext.Provider value={{movies, handleMovies, searchMovies, handleSearchMovies, searchMyMovies, handleSearchMyMovies}}>{children}</MovieContext.Provider>;
 }
 
-export const useUseContext = () => useContext(MovieContext);
+export const useMovieContext = () => useContext(MovieContext);

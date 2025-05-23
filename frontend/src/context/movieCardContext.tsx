@@ -1,4 +1,5 @@
-import { SetStateAction, createContext, useCallback, useContext, useState } from "react";
+"use client"
+import { createContext, useContext, useState } from "react";
 import { TMovie } from '../types/movieTypes'
 import { MovieCardContextType } from "@/interfaces/interfaces";
 
@@ -8,8 +9,10 @@ export const MovieCardProvider = ({ children }: { children: React.ReactNode }) =
     const [hoveredMovie, setHoveredMovie] = useState<TMovie | null>(null);
     const [loginState, setLoginState] = useState<(string | boolean)[]>(["", false]);
     const [currentPage, setCurrentPage] = useState(1);
+    const [loading, setLoading] = useState(true);
+    const [rented, setRented] = useState(false);
 
-    return <MovieCardContext.Provider value={{hoveredMovie, setHoveredMovie, loginState, setLoginState, currentPage, setCurrentPage}}>{children}</MovieCardContext.Provider>;
+    return <MovieCardContext.Provider value={{hoveredMovie, setHoveredMovie, loginState, setLoginState, currentPage, setCurrentPage, loading, setLoading, rented, setRented}}>{children}</MovieCardContext.Provider>;
 }
 
 export const useCardContext = () => {

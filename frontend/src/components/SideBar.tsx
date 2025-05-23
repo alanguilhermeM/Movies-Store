@@ -1,73 +1,91 @@
+"use client";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { MovieContextType, SideBarProps, UserContextType } from "@/interfaces/interfaces";
-import { useUseContext } from "@/context/movieContext";
-import { useUseContext as useContext } from "@/context/userContext";
+import {
+  MovieContextType,
+  UserContextType,
+  sideBarContextType,
+} from "@/interfaces/interfaces";
+import { useUserContext as useContext } from "@/context/userContext";
+import { useSideBarContext } from "@/context/sideBarContext";
+import { useRouter, usePathname } from "next/navigation";
+import { useMovieContext } from "@/context/movieContext";
 import { api } from "@/service/api";
 import { TMovie } from "@/types/movieTypes";
+import { signOut } from "next-auth/react";
+import { TUser } from "@/types/userTypes";
 
-const SideBar: React.FC<SideBarProps> = ({ loggedIn ,sideBar, setSideBar, keepLogged }) => {
-  const { movies, handleSearchMovies, handleSearchMyMovies } = useUseContext() as MovieContextType;
-  const { user } = useContext() as UserContextType;
-  const [img, setImg] = useState<string | undefined>('')
+const SideBar: React.FC = () => {
+  const { sideBar, toggleSideBar } = useSideBarContext() as sideBarContextType;
+  const { movies, handleSearchMovies, handleSearchMyMovies } =
+    useMovieContext() as MovieContextType;
+  // const { user, img } = useContext() as UserContextType;
+  const [localUser, setLocalUser] = useState<TUser>();
+  const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
-    if (user?.image_path && user?.image_path.length > 1) {
-      setImg(user?.image_path)
-    }
-  }, [user]);
+    const local = localStorage.getItem("User");
+    if (local) setLocalUser(JSON.parse(local));
+  }, []);
 
-  const Close = () => {
-    if (loggedIn) {
-      setSideBar(false);
+  const Logout = async () => {
+    try {
+      await signOut({ redirect: false });
 
-      document.querySelector("#sidebar")?.classList.toggle("left-[-18.75rem]");
+      router.push("/login");
+
+      toggleSideBar();
+    } catch (error) {
+      console.error("Erro ao fazer logout:", error);
     }
   };
 
-  const Logout = async () => {
-    localStorage.removeItem('User');
-    window.location.reload();
-  }
-
-  const handleSearch = async (e: ChangeEvent<HTMLInputElement>) => {
+  const useHandleSearch = async (e: ChangeEvent<HTMLInputElement>) => {
     const { target } = e;
-    
-    if (movies) {
-      const search = movies?.filter((movie) => movie.title.includes(target.value))
 
-      handleSearchMovies(search)
+    if (movies) {
+      const search = movies?.filter((movie) =>
+        movie.title.includes(target.value)
+      );
+
+      handleSearchMovies(search);
     }
-  
-    const local = localStorage.getItem('User');
-    if (local) {
-        const { id } = JSON.parse(local);
-        try {
-          const response = await api.get(`/moviesRentByUser/${id}`);
-          const moviesRent = response.data.moviesRent;
-          if (response.status === 200 && response.data) {
-            const moviesArray = moviesRent.map((item: any) => item.movie); // Extrair apenas os filmes
-            const search = moviesArray?.filter((movie: TMovie) => movie.title.includes(target.value))
-            handleSearchMyMovies(search)
-          }
-        } catch (error) {
-          console.log(error);
+
+    if (localUser) {
+      const { id } = localUser;
+      try {
+        const response = await api.get(`/moviesRentByUser/${id}`);
+        const moviesRent = response.data.moviesRent;
+        if (response.status === 200 && response.data) {
+          const moviesArray = moviesRent.map((item: any) => item.movie);
+          const search = moviesArray?.filter((movie: TMovie) =>
+            movie.title.includes(target.value)
+          );
+          handleSearchMyMovies(search);
         }
+      } catch (error) {
+        console.log(error);
+      }
     }
-  }
+  };
 
   return (
-    <div className="flex items-center w-4/5 text-2xl text-blue-500 justify-center m-0">
-      {sideBar ? (
-        <div
-          className="sidebar fixed top-0 bottom-0 left-0 p-2 w-[300px] overflow-y-auto text-center bg-gray-800 transition-all duration-300"
-          id="sidebar"
-        >
-          <div className="text-gray-100 text-xl">
-            <div className="p-2.5 mt-1 flex items-center justify-between">
+    <main className="flex items-center xl:w-4/5 text-2xl text-blue-500 justify-center m-0">
+      <article
+        className={`fixed xl:flex xl:flex-col top-0 bottom-0 left-0 p-2 max-xl:w-full max-xl:min-h-fit  xl:w-[300px] overflow-y-auto text-center bg-gray-800 transition-transform ease-in-out duration-300 ${
+          sideBar
+            ? "max-lg:translate-y-0 xl:translate-x-0"
+            : "max-xl:-translate-y-full xl:-translate-x-full "
+        }`}
+        id="sidebar"
+      >
+        <nav className="text-gray-100 text-xl flex flex-col justify-between h-full">
+          <div>
+            <section className="p-2.5 mt-1 flex items-center justify-between">
               <Image
-                src={img || '/profile.png'}
+                src={localUser?.image_path || "/profile.png"}
                 alt="Locadora Logo"
                 width={50}
                 height={50}
@@ -75,66 +93,67 @@ const SideBar: React.FC<SideBarProps> = ({ loggedIn ,sideBar, setSideBar, keepLo
                 className="rounded-full"
               />
               <h1 className="font-bold text-gray-200 text-[25px] mr-3">
-                {keepLogged?.name}
+                {localUser?.name}
               </h1>
               <Image
                 className="cursor-pointer hover:scale-110 transition-transform"
-                onClick={() => Close()}
+                onClick={() => toggleSideBar()}
                 src="/xIcon.png"
                 alt="icon"
                 width={20}
                 height={20}
               />
-            </div>
+            </section>
 
             <hr className="my-2 text-gray-600" />
 
-            <div className="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer bg-gray-700">
-              <i className="bi bi-search text-sm" />
-              <input
-                type="text"
-                placeholder="Search"
-                className="text-[15px] ml-4 w-full bg-transparent"
-                onChange={handleSearch}
-              />
-            </div>
+            {pathname !== "/profile" && (
+              <p className="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer bg-gray-700">
+                <i className="bi bi-search text-sm" />
+                <input
+                  type="text"
+                  placeholder="Search"
+                  aria-label="Search movies"
+                  className="text-[15px] ml-4 w-full bg-transparent"
+                  onChange={useHandleSearch}
+                />
+              </p>
+            )}
 
-            <Link href='/'>
+            <Link href="/">
               <div className="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-300 text-white">
                 <i className="bi bi-house-door-fill" />
-                <span className="text-[15px] ml-4 text-gray-200">Home</span>
+                <p className="text-[15px] ml-4 text-gray-200">Home</p>
               </div>
             </Link>
 
-            <Link href='/myMovies'>
+            <Link href="/myMovies">
               <div className="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-300 text-white">
                 <i className="bi bi-film" />
-                <span className="text-[15px] ml-4 text-gray-200">My Movies</span>
+                <p className="text-[15px] ml-4 text-gray-200">My Movies</p>
               </div>
             </Link>
 
             <hr className="my-4 text-gray-600" />
 
-            <Link href='/profile'>
+            <Link href="/profile">
               <div className="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-300 text-white">
                 <i className="bi bi-person-fill" />
-                <span className="text-[15px] ml-4 text-gray-200">
-                  Your Profile
-                </span>
+                <p className="text-[15px] ml-4 text-gray-200">Your Profile</p>
               </div>
             </Link>
-
-            <div className="p-2.5 mt-3 flex relative items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-300 text-white top-[32.5rem]">
-              <button onClick={Logout}>
-              <i className="bi bi-box-arrow-right" />
-                <span className="text-[15px] ml-4 text-gray-200">Sign Out</span>
-              </button>
-            </div>
           </div>
-        </div>
-      ) : null
-      }
-    </div>
+
+          <button
+            onClick={Logout}
+            className="w-full p-2.5 mt-3 flex relative items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-300"
+          >
+            <i className="bi bi-box-arrow-right" />
+            <p className="text-[15px] ml-4 text-gray-200">Sign Out</p>
+          </button>
+        </nav>
+      </article>
+    </main>
   );
 };
 

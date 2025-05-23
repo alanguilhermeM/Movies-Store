@@ -138,3 +138,9 @@ table {
   border-collapse: collapse;
   border-spacing: 0;
 }
+
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #ffffff #ffffff00;
+  scroll-behavior: smooth;
+}

@@ -1,97 +1,93 @@
-import React from "react";
+"use client";
+import React, { useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useUseContext } from "@/context/userContext";
-import { UserContextType } from "@/interfaces/interfaces";
-import { TUser } from "@/types/userTypes";
-import { useEffect, useState } from "react";
-// import { useRouter } from "next/router";
+import { useUserContext } from "@/context/userContext";
+import { UserContextType, sideBarContextType } from "@/interfaces/interfaces";
+import { useEffect } from "react";
 import SideBar from "./SideBar";
-import { HeaderProps } from "@/types/componentTypes";
+import { useSideBarContext } from "@/context/sideBarContext";
+import { useSession } from "next-auth/react";
+import { gSubmit2 } from "@/utils/handlers";
 
+const Header: React.FC = () => {
+  const { user, img, setImg, handleUser } = useUserContext() as UserContextType;
+  const { loggedIn, setLoggedIn, sideBar, toggleSideBar } =
+    useSideBarContext() as sideBarContextType;
+  const { data: session, status } = useSession();
 
-const Header: React.FC<HeaderProps> = ({  setSideBarOn }) => {
-  const { user } = useUseContext() as UserContextType;
-  const [loggedIn, setLoggedIn] = useState(false);
-  const [sideBar, setSideBar] = useState(false);
-  const [keepLogged, setKeepLogged] = useState<TUser | undefined>(user)
-  const [img, setImg] = useState<string | undefined>('')
-  // const router = useRouter()
+  const memoizedHandleImg = useCallback(
+    () => {
+      if (user?.image_path) {
+        localStorage.setItem('ProfileImg', user.image_path)
+        setImg(user.image_path)
+      } else if (session?.user?.image) {
+        setImg(session?.user?.image);
+      }
+    },
+    [user, session, setImg]
+  );
 
   useEffect(() => {
-    isLoggedIn(user);
-    setSideBarOn(sideBar)
-    if (user?.image_path && user?.image_path.length > 1) {
-      setImg(user?.image_path)
-    }
-  }, [user, sideBar]);
+    memoizedHandleImg();
 
-  const isLoggedIn = (user: TUser | undefined) => {
-    const isLogged = localStorage.getItem('User');
-    // console.log
-    if (isLogged) {
-      setKeepLogged(JSON.parse(isLogged))
+    if (!user && session) {
+      gSubmit2(handleUser);
       setLoggedIn(true);
-      return
     }
 
     if (user) {
-      localStorage.setItem('User', JSON.stringify(user));
-      setLoggedIn(true);
-      return
+      const localUser = localStorage.getItem("User");
+      if (!localUser || JSON.parse(localUser).email !== user.email) {
+        localStorage.setItem("User", JSON.stringify(user));
+        setLoggedIn(true);
+      } else {
+        setLoggedIn(true)
+      }
     }
-  };
-
-  // const handleUser = () => {
-  //   router.push('/configurations')
-  // }
-
-  const Open = () => {
-    if (loggedIn) {
-      setSideBar(true);
-      document.querySelector('#sidebar')?.classList.toggle('left-[-18.75rem]');
-    }
-  }
+  }, [user, session, status, memoizedHandleImg, handleUser, setLoggedIn]);
 
   return (
-    <header className="flex p-3 bg-gray-800 justify-center shadow-2xl m-0">
+    <header className="flex fixed w-full z-50 p-3 bg-gray-800 justify-center shadow-2xl m-0">
       <div className="flex items-center w-4/5 text-2xl text-white justify-center m-0">
-        {loggedIn ?
-        <div className="h-16">
+        {loggedIn ? (
+          <section className="h-16">
 
-          <Image
-            id="profile"
-            src={img || '/profile.png'}
-            alt="Locadora Logo"
-            width={70}
-            height={70}
-            quality={50}
-            className={`relative rounded-full cursor-pointer hover:scale-105 transition-all right-[42rem] ${sideBar ? 'hidden' : ''}`}
-            onClick={() => Open()}
-          />
-          <SideBar 
-            sideBar={sideBar} 
-            keepLogged={keepLogged} 
-            setSideBar={setSideBar} 
-            loggedIn={loggedIn}
-          />
-          
-        </div> :
-        <div className="flex items-center w-full justify-between">
-          <Image
-            src="/logoMovie.png"
-            alt="Locadora Logo"
-            width={50}
-            height={50}
-            quality={50}
-          />
-          <div className="flex w-[12rem] justify-between">
-            <Link href="/login" className="hover:scale-105 transition-all">Login</Link>
-            <Link href="/register" className="hover:scale-105 transition-all">Sign Up</Link>
-          </div>    
-        </div>
-        }
-        
+            <Image
+              id="profile"
+              src={img ? img : "/profile.png"}
+              alt="Locadora Logo"
+              aria-expanded={sideBar ? "true" : "false"}
+              aria-label="Open menu"
+              width={70}
+              height={70}
+              quality={50}
+              className={`relative rounded-full cursor-pointer hover:scale-105 transition-all xl:right-[34rem] 2xl:right-[42rem] 3xl:right-[52rem] ${
+                sideBar ? "hidden" : ""
+              }`}
+              onClick={() => toggleSideBar()}
+            />
+            <SideBar />
+          </section>
+        ) : (
+          <section className="flex items-center w-full max-md:justify-around md:justify-between">
+            <Image
+              src="/logoMovie.png"
+              alt="Locadora Logo"
+              width={50}
+              height={50}
+              quality={50}
+            />
+            <nav className="flex w-[42rem] max-3xl:justify-end">
+              <Link href="/login" className="hover:scale-105 transition-all">
+                Sign In
+              </Link>
+              <Link href="/register" className="hover:scale-105 transition-all max-md:pl-4 max-3xl:pl-8">
+                Sign Up
+              </Link>
+            </nav>
+          </section>
+        )}
       </div>
     </header>
   );

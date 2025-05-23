@@ -1,8 +1,8 @@
-const express = require('express');
+import express from 'express';
 
 import MovieController from '../controllers/MovieController';
 
-const mController = new MovieController
+const mController = new MovieController;
 
 const router = express.Router();
 
@@ -13,4 +13,4 @@ router.put('/movie/:id', mController.updateMovie);
 router.delete('/movie/:id', mController.deleteMovie);
 router.delete('/movies', mController.deleteAllMovies);
 
-module.exports = router;
+export default router;

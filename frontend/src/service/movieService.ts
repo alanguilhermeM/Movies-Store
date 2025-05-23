@@ -1,6 +1,7 @@
 import { api } from "@/service/api";
 import { TMovie } from "@/types/movieTypes";
 import { getMovies, getMoviesFromDb } from "@/utils/moviesAPI";
+import { Dispatch, SetStateAction } from "react";
 
 const getAllMoviesFromDb = async (currentRoute: string, handleMovies: (movies: TMovie[]) => void) => {
   const response = await getMoviesFromDb("movies", currentRoute);
@@ -30,7 +31,17 @@ const insertMovies = async (page: number) => {
   }
 };
 
+const getMoviesRentFromDb = async (currentRoute: string, setMyMovies: Dispatch<SetStateAction<TMovie[] | undefined>>) => {
+  const response = await getMoviesFromDb('moviesRentByUser', currentRoute)
+  if (response?.status === 200 && response.data) {
+    const moviesRent = response?.data.moviesRent
+    const moviesArray = moviesRent.map((item: any) => item.movie);
+    setMyMovies(moviesArray);
+  }
+}
+
 export {
     getAllMoviesFromDb,
     insertMovies,
+    getMoviesRentFromDb,
 }

@@ -1,27 +1,29 @@
-import express from "express";
-import cors from "cors";
+import express from 'express';
+import cors from 'cors';
+import authRoutes from './routes/auth';
 
 const app = express();
 
 app.use(express.json());
 
-const userRoutes = require("./routes/userRoutes");
-const movieRoutes = require("./routes/movieRoutes");
-const movieRentRoutes = require("./routes/movieRentRoutes");
+import userRoutes from './routes/userRoutes';
+import movieRoutes from './routes/movieRoutes';
+import movieRentRoutes from './routes/movieRentRoutes';
 
 app.use(
-  cors({
-    origin: "http://localhost:3002", // Permitir solicitações vindas do domínio da sua aplicação Next.js
-    credentials: true, // Permitir que a aplicação Next.js envie cookies junto com a requisição (se aplicável)
-  })
+	cors({
+		origin: 'http://localhost:3000',
+		credentials: true,
+	}),
 );
 
-app.use("/", userRoutes);
-app.use("/", movieRoutes);
-app.use("/", movieRentRoutes);
+app.use('/', userRoutes);
+app.use('/', movieRoutes);
+app.use('/', movieRentRoutes);
+app.use('/', authRoutes);
 
-const PORT = process.env.PORT || 3000;
+const port = process.env.PORT ?? 3002;
 
-app.listen(PORT, () => {
-  console.log(`Servidor Express rodando na porta ${PORT}`);
+app.listen(port, () => {
+	console.log(`Servidor Express rodando na porta ${port}`);
 });
