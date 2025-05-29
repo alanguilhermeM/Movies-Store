@@ -1,9 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
-import {
-  handleMouseEnter,
-  handleMouseLeave,
-  handleRemoveRent,
-} from "@/utils/handlers";
+import { handleRemoveRent } from "@/utils/myCardMoviesHandlers";
+import { handleMouseEnter, handleMouseLeave } from "@/utils/cardMovieHandlers";
 import { IMAGE_PATH } from "@/utils/moviesAPI";
 import { useCardContext } from "@/context/movieCardContext";
 import {

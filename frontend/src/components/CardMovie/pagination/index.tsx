@@ -1,12 +1,7 @@
 import { useCardContext } from "@/context/movieCardContext";
-import { useMovieContext } from "@/context/movieContext";
 import { useSideBarContext } from "@/context/sideBarContext";
-import {
-  MovieCardContextType,
-  MovieContextType,
-  sideBarContextType,
-} from "@/interfaces/interfaces";
-import { handlePage } from "@/utils/handlers";
+import { MovieCardContextType, sideBarContextType } from "@/interfaces/interfaces";
+import { handlePage } from "@/utils/cardMovieHandlers";
 
 const Pagination: React.FC = () => {
   const { currentPage, setCurrentPage } =

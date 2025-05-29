@@ -10,7 +10,7 @@ import { useCardContext } from "@/context/movieCardContext";
 import Pagination from "./pagination";
 import { useSideBarContext } from "@/context/sideBarContext";
 import { useEffect } from "react";
-import { syncMovies } from "@/utils/handlers";
+import { syncMovies } from "@/utils/formHandlers";
 
 const CardMovie: React.FC = () => {
   const { movies, handleMovies, searchMovies, handleSearchMovies } =

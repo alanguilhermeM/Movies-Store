@@ -8,7 +8,7 @@ import { useEffect } from "react";
 import SideBar from "./SideBar";
 import { useSideBarContext } from "@/context/sideBarContext";
 import { useSession } from "next-auth/react";
-import { gSubmit2 } from "@/utils/handlers";
+import { gSubmit2 } from "@/utils/formHandlers";
 
 const Header: React.FC = () => {
   const { user, img, setImg, handleUser } = useUserContext() as UserContextType;

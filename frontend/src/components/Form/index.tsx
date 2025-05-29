@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useUserContext } from "@/context/userContext";
 import { MovieCardContextType, MovieContextType, UserContextType } from "@/interfaces/interfaces";
 import { useRouter } from "next/navigation";
-import { gSubmit, handleSubmit } from "@/utils/handlers";
+import { handleSubmit } from "@/utils/formHandlers";
 import Link from "next/link";
 import { useMovieContext } from "@/context/movieContext";
 import { useCardContext } from "@/context/movieCardContext";

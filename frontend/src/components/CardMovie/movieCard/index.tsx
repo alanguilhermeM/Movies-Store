@@ -5,7 +5,7 @@ import {
   handleMouseEnter,
   handleMouseLeave,
   handleRent,
-} from "@/utils/handlers";
+} from "@/utils/cardMovieHandlers";
 import { IMAGE_PATH } from "@/utils/moviesAPI";
 import { useCardContext } from "@/context/movieCardContext";
 import { MovieCardContextType, MovieCardProps } from "@/interfaces/interfaces";
