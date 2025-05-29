@@ -19,7 +19,7 @@ export default class UserController implements UserMethods {
 			const alreadyExist = await prisma.user.findUnique({where: {email}});
 
 			if (alreadyExist) {
-				return res.status(400).json({message: 'Usario já cadastrado!'});
+				return res.status(409).json({message: 'Usario já cadastrado!'});
 			}
 
 			let hashedPassword = '';

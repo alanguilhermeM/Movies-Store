@@ -13,18 +13,12 @@ const Pagination: React.FC = () => {
     useCardContext() as MovieCardContextType;
   const { sideBar } = useSideBarContext() as sideBarContextType;
 
-  const { searchMovies } = useMovieContext() as MovieContextType;
-
-  const itemsPerPage = 30;
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const moviesToShow = searchMovies?.slice(startIndex, endIndex);
-  const NUMBER = 30;
-
   return (
     <nav
       aria-label="Paginação"
-      className={`flex w-full justify-center items-center p-4 transition-all ease-in-out duration-300 ${sideBar ? "xl:ml-[25%] xl:w-[75%] 2xl:ml-[20%] 2xl:w-[80%]" : ""}`}
+      className={`flex w-full justify-center items-center p-4 transition-all ease-in-out duration-300 ${
+        sideBar ? "xl:ml-[25%] xl:w-[75%] 2xl:ml-[20%] 2xl:w-[80%]" : ""
+      }`}
     >
       <button
         onClick={(e) => handlePage(e, { setCurrentPage, currentPage })}
@@ -40,11 +34,9 @@ const Pagination: React.FC = () => {
         onClick={(e) => handlePage(e, { setCurrentPage, currentPage })}
         value="Next"
         className={`mr-4 ml-4 max-xl:w-1/2 xl:w-1/4 ${
-          moviesToShow && moviesToShow?.length < NUMBER
-            ? "bg-gray-700"
-            : "bg-gray-800"
+          currentPage >= 5 ? "bg-gray-700" : "bg-gray-800"
         }  text-white rounded-lg p-2 hover:scale-105 transition-all`}
-        disabled={moviesToShow && moviesToShow?.length < NUMBER ? true : false}
+        disabled={currentPage >= 5}
       >
         Next Page
       </button>

@@ -1,10 +1,12 @@
 "use client"
 import React, { useEffect, useRef, useState } from "react";
 import { useUserContext } from "@/context/userContext";
-import { UserContextType } from "@/interfaces/interfaces";
+import { MovieCardContextType, MovieContextType, UserContextType } from "@/interfaces/interfaces";
 import { useRouter } from "next/navigation";
 import { gSubmit, handleSubmit } from "@/utils/handlers";
 import Link from "next/link";
+import { useMovieContext } from "@/context/movieContext";
+import { useCardContext } from "@/context/movieCardContext";
 
 const Form: React.FC = () => {
   const passwordRef = useRef<HTMLInputElement>(null);
@@ -12,6 +14,8 @@ const Form: React.FC = () => {
   const [userExist, setUserExist] = useState(true);
   const { handleUser } = useUserContext() as UserContextType;
   const router = useRouter();
+  const { handleMovies } = useMovieContext() as MovieContextType;
+  const { currentPage } = useCardContext() as MovieCardContextType;
 
   useEffect(() => {
     localStorage.clear()
@@ -26,6 +30,8 @@ const Form: React.FC = () => {
           setUserExist,
           handleUser,
           router,
+          handleMovies,
+          currentPage,
         })
       }
       className="flex flex-col justify-center items-center w-full bg-white h-full lg:h-4/6 lg:rounded-xl text-2xl text-gray-600 drop-shadow-2xl"

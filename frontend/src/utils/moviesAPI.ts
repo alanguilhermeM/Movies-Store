@@ -5,41 +5,34 @@ import { api } from "@/service/api";
 const API_KEY = "c0c02132ffe3677c036b889597f0bdc0";
 export const IMAGE_PATH = "https://image.tmdb.org/t/p/w500";
 
-export const getMovies = async (
-  page: number
-): Promise<
-  {
+export const getMovies = async (page: number): Promise<{
+  movies: {
     title: string;
     release_date: string;
     overview: string;
     poster_path: string;
     page: number;
-  }[]
-> => {
+  }[],
+  total_pages: number
+}> => {
   try {
     const response = await fetch(
       `https://api.themoviedb.org/3/movie/top_rated?api_key=${API_KEY}&page=${page}`
     );
     const data = await response.json();
-    // console.log(data)
-    const movies: {
-      title: string;
-      overview: string;
-      release_date: string;
-      poster_path: string;
-      page: number;
-    }[] = data.results.map((movie: any) => ({
+
+    const movies = data.results.map((movie: any) => ({
       title: movie.title,
       release_date: movie.release_date,
       overview: movie.overview,
       poster_path: movie.poster_path,
       page: data.page,
     }));
-    // console.log(movies)
-    return movies;
+
+    return { movies, total_pages: data.total_pages };
   } catch (error) {
     console.error(error);
-    return [];
+    return { movies: [], total_pages: 1 };
   }
 };
 

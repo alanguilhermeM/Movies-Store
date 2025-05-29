@@ -4,16 +4,44 @@ import {
   HandlePageData,
   HandleSubmitData,
 } from "@/interfaces/handlersInterfaces";
+import { getMoviesFromDb } from "@/utils/moviesAPI";
+import { insertMovies } from "@/service/movieService";
 import { TMovie } from "@/types/movieTypes";
 import { getSession, signIn } from "next-auth/react";
 import axios from "axios";
 import bcrypt from "bcryptjs";
-import { TUser, TUserSession } from "@/types/userTypes";
+import { TUser } from "@/types/userTypes";
 
 // Component Form
+const syncMovies = async (currentPage: number, handleMovies: (movies: TMovie[]) => void) => {
+  const response = await getMoviesFromDb("movies", "/");
+  const dbMovies = response?.data?.allMovies ?? [];
+
+  const hasMoviesForPage = dbMovies.some(
+    (movie: any) => movie.page === currentPage
+  );
+
+  if (!hasMoviesForPage) {
+    await insertMovies(currentPage);
+    // Após inserir, atualiza os dados:
+    const updated = await getMoviesFromDb("movies", "/");
+    handleMovies(updated?.data?.allMovies ?? []);
+  } else {
+    handleMovies(dbMovies);
+  }
+};
+
 async function handleSubmit(e: FormEvent, data: HandleSubmitData) {
   e.preventDefault();
-  const { emailRef, passwordRef, handleUser, setUserExist, router } = data;
+  const {
+    emailRef,
+    passwordRef,
+    handleUser,
+    setUserExist,
+    router,
+    handleMovies,
+    currentPage,
+  } = data;
 
   const email = emailRef.current?.value;
   const password = passwordRef.current?.value;
@@ -41,6 +69,8 @@ async function handleSubmit(e: FormEvent, data: HandleSubmitData) {
     ) {
       localStorage.setItem("User", JSON.stringify(response.data.User));
       handleUser(response.data.User);
+      await syncMovies(currentPage, handleMovies);
+     
       router.replace("/");
     } else {
       setUserExist(false);
@@ -86,12 +116,14 @@ const gSubmit2 = async (handleUser: (user: TUser) => void) => {
 
     const user =
       response.status !== 200
-        ? (await api.post("/user", {
-            name,
-            email,
-            password,
-            image_path: image,
-          })).data.User
+        ? (
+            await api.post("/user", {
+              name,
+              email,
+              password,
+              image_path: image,
+            })
+          ).data.User
         : response.data.User;
 
     localStorage.setItem("User", JSON.stringify(user));
@@ -104,7 +136,6 @@ const gSubmit2 = async (handleUser: (user: TUser) => void) => {
     }
   }
 };
-
 
 // CardMovie Component
 const isUserLoggedIn = (): string | null => localStorage.getItem("User");
@@ -220,6 +251,7 @@ const handleRemoveRent = async (
 };
 
 export {
+  syncMovies,
   handleSubmit,
   handleRent,
   handlePage,

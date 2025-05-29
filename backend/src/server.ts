@@ -13,7 +13,7 @@ import movieRentRoutes from './routes/movieRentRoutes';
 app.use(
 	cors({
 		origin: 'http://localhost:3000',
-		credentials: true,
+		// credentials: true,
 	}),
 );
 

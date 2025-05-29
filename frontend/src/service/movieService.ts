@@ -13,9 +13,18 @@ const getAllMoviesFromDb = async (currentRoute: string, handleMovies: (movies: T
 const insertMovies = async (page: number) => {
   try {
     const data = await getMovies(page);
-    if (data.length > 0) {
-      const promises = data.map(async (movie) => {
-        const { title, overview, release_date, poster_path, page } = movie;
+    
+    if (data.movies.length === 0) return;
+
+    const promises = data.movies.map(async (movie) => {
+      const { title, overview, release_date, poster_path, page } = movie;
+
+      if (!title || !release_date || !poster_path) {
+        console.log(`Filme inválido ignorado: ${title}`);
+        return;
+      }
+
+      try {
         await api.post("/movie", {
           title,
           release_date,
@@ -23,13 +32,17 @@ const insertMovies = async (page: number) => {
           image_path: poster_path,
           page,
         });
-      });
-      await Promise.all(promises);
-    }
+      } catch (err) {
+        console.error(`Erro ao inserir o filme "${title}":`, err);
+      }
+    });
+
+    await Promise.all(promises);
   } catch (error) {
     console.error("Erro ao inserir filmes:", error);
   }
 };
+
 
 const getMoviesRentFromDb = async (currentRoute: string, setMyMovies: Dispatch<SetStateAction<TMovie[] | undefined>>) => {
   const response = await getMoviesFromDb('moviesRentByUser', currentRoute)

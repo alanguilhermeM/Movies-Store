@@ -10,7 +10,7 @@ services:
       - .:/app
     tty: true
     stdin_open: true
-    command: sh
+    command: ["npm", "run", "start"]
     env_file:
       - ./envs/api.env
     depends_on:
