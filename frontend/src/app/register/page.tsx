@@ -88,7 +88,7 @@ const Register: React.FC = () => {
 
           <button
             type="submit"
-            className="relative bg-gray-800 text-white py-2 w-5/6 rounded-xl hover:scale-105 top-14 transition-all"
+            className="relative bg-gray-800 text-white py-2 w-5/6 rounded-xl hover:scale-105 max-lg:top-14 lg:top-8 2xl:top-14 transition-all"
           >
             Sign Up
           </button>

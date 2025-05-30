@@ -33,13 +33,13 @@ const MyMovies: React.FC = () => {
 
   return (
     <article
-      className={`flex w-full justify-center transition-all ease-in-out duration-300 ${
+      className={`flex w-full min-h-screen justify-center transition-all ease-in-out duration-300 ${
         sideBar
-          ? "max-xl:mt-[300px] xl:w-[75%] xl:translate-x-[32.5%] 2xl:translate-x-[30%] 3xl:translate-x-[27.5%]"
+          ? "max-xl:mt-[300px] xl:w-[75%] xl:translate-x-[32.5%] 2xl:translate-x-[30%] 3xl:translate-x-[27%]"
           : null
       } `}
     >
-      <section className={`grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6 justify-items-center w-full max-w-[1600px] ${sideBar ? "xl:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5" : "mx-auto"} mt-20`}>
+      <section className={`grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 = justify-items-center w-full max-w-[1600px] ${sideBar ? "xl:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5" : "2xl:grid-cols-5 3xl:grid-cols-6 mx-auto"} mt-20`}>
         {searchMyMovies &&
           searchMyMovies.map((movie) => (
             <MyMovieCard key={movie.id} movie={movie} />
