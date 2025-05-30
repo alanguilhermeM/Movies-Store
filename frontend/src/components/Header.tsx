@@ -23,6 +23,9 @@ const Header: React.FC = () => {
         setImg(user.image_path)
       } else if (session?.user?.image) {
         setImg(session?.user?.image);
+      } else {
+        const img = localStorage.getItem('ProfileImg');
+        setImg(img);
       }
     },
     [user, session, setImg]
@@ -32,7 +35,6 @@ const Header: React.FC = () => {
     memoizedHandleImg();
 
     if (!user && session) {
-      gSubmit2(handleUser);
       setLoggedIn(true);
     }
 
@@ -45,7 +47,7 @@ const Header: React.FC = () => {
         setLoggedIn(true)
       }
     }
-  }, [user, session, status, memoizedHandleImg, handleUser, setLoggedIn]);
+  }, [user, session, status, memoizedHandleImg, handleUser, setLoggedIn, img]);
 
   return (
     <header className="flex fixed w-full z-50 p-3 bg-gray-800 justify-center shadow-2xl m-0">

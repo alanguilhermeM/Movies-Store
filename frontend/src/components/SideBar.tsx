@@ -3,11 +3,7 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
-  MovieContextType,
-  UserContextType,
-  sideBarContextType,
-} from "@/interfaces/interfaces";
-import { useUserContext as useContext } from "@/context/userContext";
+  MovieContextType, sideBarContextType,} from "@/interfaces/interfaces";
 import { useSideBarContext } from "@/context/sideBarContext";
 import { useRouter, usePathname } from "next/navigation";
 import { useMovieContext } from "@/context/movieContext";
@@ -20,7 +16,6 @@ const SideBar: React.FC = () => {
   const { sideBar, toggleSideBar } = useSideBarContext() as sideBarContextType;
   const { movies, handleSearchMovies, handleSearchMyMovies } =
     useMovieContext() as MovieContextType;
-  // const { user, img } = useContext() as UserContextType;
   const [localUser, setLocalUser] = useState<TUser>();
   const router = useRouter();
   const pathname = usePathname();

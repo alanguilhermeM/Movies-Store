@@ -84,49 +84,31 @@ const gSubmit = async (provider: string) => {
   await signIn(provider, { callbackUrl: "/" });
 };
 
-const gSubmit2 = async (handleUser: (user: TUser) => void) => {
+const gSubmit2 = async (session: any, handleUser: (user: TUser) => void) => {
+  const { email, image, name } = session.user;
+
+  if (!email || !name || !image) {
+    throw new Error("Dados do usuário estão incompletos.");
+  }
+
+  const password = Math.random().toString(36).slice(-8);
+  const response = await api.get(`/user/${email}`);
+
+  const user =
+    response.status !== 200
+      ? (
+          await api.post("/user", {
+            name,
+            email,
+            password,
+            image_path: image,
+          })
+        ).data.User
+      : response.data.User;
+
+  localStorage.setItem("User", JSON.stringify(user));
+  handleUser(user);
   try {
-    const waitForSession = async () => {
-      let retries = 10;
-      while (retries > 0) {
-        const currentSession = await getSession();
-        if (currentSession?.user) {
-          console.log("Sessão encontrada:", currentSession);
-          return currentSession;
-        }
-        retries--;
-        console.log(`Tentativa restante: ${retries}`);
-        await new Promise((resolve) => setTimeout(resolve, 500));
-      }
-      throw new Error("A sessão não foi atualizada a tempo.");
-    };
-
-    const updatedSession = await waitForSession();
-    const { email, image, name } = updatedSession?.user
-      ? updatedSession.user
-      : { email: null, image: null, name: null };
-
-    if (!email || !name || !image) {
-      throw new Error("Dados do usuário estão incompletos.");
-    }
-
-    const password = Math.random().toString(36).slice(-8); // Em produção, gerar com segurança
-    const response = await api.get(`/user/${email}`);
-
-    const user =
-      response.status !== 200
-        ? (
-            await api.post("/user", {
-              name,
-              email,
-              password,
-              image_path: image,
-            })
-          ).data.User
-        : response.data.User;
-
-    localStorage.setItem("User", JSON.stringify(user));
-    handleUser(user);
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.error("Erro na requisição:", error.response?.data);
@@ -136,9 +118,4 @@ const gSubmit2 = async (handleUser: (user: TUser) => void) => {
   }
 };
 
-export {
-  syncMovies,
-  handleSubmit,
-  gSubmit,
-  gSubmit2,
-};
+export { syncMovies, handleSubmit, gSubmit, gSubmit2 };
