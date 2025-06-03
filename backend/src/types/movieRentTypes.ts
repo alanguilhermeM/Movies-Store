@@ -1,9 +1,9 @@
-import {type TMovie} from './movieTypes';
-import {type TUser} from './userTypes';
+import {type MovieT} from './movieTypes';
+import {type UserT} from './userTypes';
 
 export type MovieRentT = {
-	user: TUser;
+	user: UserT;
 	userId: number;
-	movie: TMovie;
+	movie: MovieT;
 	movieId: number;
 };

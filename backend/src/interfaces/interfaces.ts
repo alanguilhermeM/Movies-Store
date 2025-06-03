@@ -1,28 +1,28 @@
-import {type TMovieRent} from '../types/movieRentTypes';
-import {type TMovie} from '../types/movieTypes';
-import {type TUser} from '../types/userTypes';
+import {type MovieRentT} from '../types/movieRentTypes';
+import {type MovieT} from '../types/movieTypes';
+import {type UserT} from '../types/userTypes';
 import {type Request, type Response} from 'express';
 
 export type UserMethods = {
-	createUser(req: Request, res: Response): Promise<Response<TUser> | undefined>;
-	updateUser(req: Request, res: Response): Promise<Response<TUser> | undefined>;
-	listUser(req: Request, res: Response): Promise<Response<TUser> | undefined>;
-	listAllUsers(req: Request, res: Response): Promise<Response<TUser[]> | undefined>;
-	deleteUser(req: Request, res: Response): Promise<Response<TUser> | undefined>;
+	createUser(req: Request, res: Response): Promise<Response<UserT> | undefined>;
+	updateUser(req: Request, res: Response): Promise<Response<UserT> | undefined>;
+	listUser(req: Request, res: Response): Promise<Response<UserT> | undefined>;
+	listAllUsers(req: Request, res: Response): Promise<Response<UserT[]> | undefined>;
+	deleteUser(req: Request, res: Response): Promise<Response<UserT> | undefined>;
 };
 
 export type MovieMethods = {
-	createMovie(req: Request, res: Response): Promise<Response<TMovie> | undefined>;
-	updateMovie(req: Request, res: Response): Promise<Response<TMovie> | undefined>;
-	listMovie(req: Request, res: Response): Promise<Response<TMovie> | undefined>;
-	listAllMovies(req: Request, res: Response): Promise<Response<TMovie[]> | undefined>;
-	deleteMovie(req: Request, res: Response): Promise<Response<TMovie> | undefined>;
-	deleteAllMovies(req: Request, res: Response): Promise<Response<TMovie> | undefined>;
+	createMovie(req: Request, res: Response): Promise<Response<MovieT> | undefined>;
+	updateMovie(req: Request, res: Response): Promise<Response<MovieT> | undefined>;
+	listMovie(req: Request, res: Response): Promise<Response<MovieT> | undefined>;
+	listAllMovies(req: Request, res: Response): Promise<Response<MovieT[]> | undefined>;
+	deleteMovie(req: Request, res: Response): Promise<Response<MovieT> | undefined>;
+	deleteAllMovies(req: Request, res: Response): Promise<Response<MovieT> | undefined>;
 };
 
 export type MovieRentMethods = {
-	createMovieRent(req: Request, res: Response): Promise<Response<TMovieRent> | undefined>;
-	updateMovieRent(req: Request, res: Response): Promise<Response<TMovieRent> | undefined>;
-	getMoviesRent(req: Request, res: Response): Promise<Response<TMovieRent[]> | undefined>;
-	deleteMovieRent(req: Request, res: Response): Promise<Response<TMovieRent> | undefined>;
+	createMovieRent(req: Request, res: Response): Promise<Response<MovieRentT> | undefined>;
+	updateMovieRent(req: Request, res: Response): Promise<Response<MovieRentT> | undefined>;
+	getMoviesRent(req: Request, res: Response): Promise<Response<MovieRentT[]> | undefined>;
+	deleteMovieRent(req: Request, res: Response): Promise<Response<MovieRentT> | undefined>;
 };
