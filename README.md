@@ -76,14 +76,54 @@
           npm install
   <br>     
     </li>
+    <li>
+      Crie e configure as <strong>Variaveis de Ambiente</strong>:
+      
+        movies-store/
+        ├── backend/
+           └── envs/
+               └── api.env
+               └── database.env
+        ├── frontend/
+           └── prisma/
+           └── src/
+           └── .env
+<br>
+
+    # api.env
+    
+        DATABASE_URL="mysql://root:password@database:3306/moviesdb"
+        DATABASE_HOST=database 
+        DATABASE_PORT=3306
+        DATABASE_USER=root
+        DATABASE_PASSWORD=password
+        DATABASE_NAME=moviesdb
+            
+        PORT=3001
+            
+        JWT_SECRET=e0102e32dd3a3e2120afae0c38297d71fc63eada316229b0c9dd2509f32bec698ea78338c3b79369b878e47f397ec5d82541cdf7eb264572e0a4b1368c50e1f5
+<br>
+ 
+    # database.env
+    
+        MYSQL_ROOT_PASSWORD=password 
+        MYSQL_DATABASE=moviesdb   
+<br>
+ 
+    # .env
+    
+        NEXTAUTH_URL="http://localhost:3001"
+        NEXTAUTH_SECRET="fj02#@!LKAF9832jfkdsl9034JKLNF@kdjds#KLJ"
+  <br>     
+    </li>
   </ul>
 
 ## 🛠️ Como rodar o projeto
 
   <ol>
     <li>
-      <strong>Configure as variáveis de ambiente:</strong>
-        Renomeie .env.example para .env tanto no backend/ quanto no frontend/.
+      <strong><h2>LEMBRETE:</h1>Configure as variáveis de ambiente:</strong>
+        Crie e configure as variaveis de ambiente no backend e no frontend
     </li>
     <br>
     <li>
@@ -91,13 +131,6 @@
       
         cd backend
         docker-compose up --build
-  <br>
-    </li>
-    <li>
-      Rodar backend
-      
-        cd backend
-        npm run dev
   <br>
     </li>
     <li>
