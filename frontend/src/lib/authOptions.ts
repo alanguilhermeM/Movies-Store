@@ -10,20 +10,22 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        const res = await fetch("http://localhost:3002/auth/login", {
+        if (!credentials?.email || !credentials?.password) return null;
+
+        const { email, password } = credentials;
+        const res = await fetch("http://localhost:3001/auth/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(credentials),
+          body: JSON.stringify({email, password}),
         });
 
         const user = await res.json();
-
         if (res.ok && user) {
           return {
             id: user.id,
             name: user.name,
             email: user.email,
-            image: user.image_path || null, // <- importante
+            image: user.image_path || null,
           };
         }
 

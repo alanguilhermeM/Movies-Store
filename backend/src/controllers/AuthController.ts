@@ -49,8 +49,12 @@ class AuthController {
 				token,
 			});
 		} catch (error) {
-			res.status(500).json({message: 'Something went wrong', error});
-		}
+			res.status(500).json({
+			  message: 'Erro de autenticação',
+			  body: req.body,
+			  error: error instanceof Error ? error.message : error,
+			});
+		  }
 	}
 }
 
