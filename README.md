@@ -130,6 +130,7 @@
       Rodar com Docker
       
         cd backend
+        npm run build
         docker-compose up --build
   <br>
     </li>
